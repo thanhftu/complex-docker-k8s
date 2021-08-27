@@ -1,0 +1,47 @@
+version: "3.9"
+networks: 
+  complex:
+services:
+  postgres:
+    image: "postgres"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_DB=fibonacci
+      - POSTGRES_PASSWORD=secret
+    ports: 
+        - "5432:5432"
+    networks: 
+      - complex
+  redis:
+    image: "redis"
+    ports:
+        - "6379:6379"
+    networks: 
+      - complex
+  api:
+    build:
+      context: ./multi-apik8s
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_ADDR=redis:6379
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/fibonacci?sslmode=disable
+    ports: 
+      - "8000:8000"
+    networks:
+      - complex
+    entrypoint: ["/app/wait-for","postgres:5432","--","/app/start.sh"]
+    command: ["/app/main"]
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./multi-reactk8s
+    volumes:
+      - /app/node_modules
+      - ./react-docker:/app
+    networks: 
+      - complex

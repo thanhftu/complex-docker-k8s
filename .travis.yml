@@ -1,0 +1,30 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t thanhdhnt/react-test -f ./react-docker/Dockerfile.dev ./react-docker
+
+script:
+  - docker run -e CI=true thanhdhnt/react-test npm test
+
+after_success:
+  - docker build -t thanhdhnt/multi-reactk8s ./multi-reactk8s
+  - docker build -t thanhdhnt/multi-apik8s ./multi-apik8s
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push thanhdhnt/multi-reactk8s
+  - docker push thanhdhnt/multi-apik8s
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "ap-southeast-1"
+#   app: "multi-docker"
+#   env: "Multidocker-env"
+#   bucket_name: "elasticbeanstalk-ap-southeast-1-077287700844"
+#   bucket_path: "multi-docker"
+#   on:
+#     branch: master
+#   access_key_id: "$AWS_ACCESS_KEY"
+#   secret_access_key: "$AWS_SECRET_KEY"
