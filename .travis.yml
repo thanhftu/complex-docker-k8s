@@ -2,29 +2,29 @@ language: generic
 sudo: required
 services:
   - docker
-
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
+  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project multi-k8s-324415
+  - gcloud config set compute/zone asia-southeast1-a
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
   - docker build -t thanhdhnt/react-test -f ./react-docker/Dockerfile.dev ./react-docker
+
 
 script:
   - docker run -e CI=true thanhdhnt/react-test npm test
 
-after_success:
-  - docker build -t thanhdhnt/multi-reactk8s ./multi-reactk8s
-  - docker build -t thanhdhnt/multi-apik8s ./multi-apik8s
-  # Log in to the docker CLI
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # Take those images and push them to docker hub
-  - docker push thanhdhnt/multi-reactk8s
-  - docker push thanhdhnt/multi-apik8s
-# deploy:
-#   provider: elasticbeanstalk
-#   region: "ap-southeast-1"
-#   app: "multi-docker"
-#   env: "Multidocker-env"
-#   bucket_name: "elasticbeanstalk-ap-southeast-1-077287700844"
-#   bucket_path: "multi-docker"
-#   on:
-#     branch: master
-#   access_key_id: "$AWS_ACCESS_KEY"
-#   secret_access_key: "$AWS_SECRET_KEY"
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: main

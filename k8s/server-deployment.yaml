@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: thanhdhnt/multi-apik8s:v1.0.0
+          image: thanhdhnt/multi-apik8s
           ports:
             - containerPort: 8000
           env:
