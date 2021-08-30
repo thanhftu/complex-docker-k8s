@@ -22,11 +22,11 @@ func NewServer(store db.Store) *Server {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 	router.Use(cors.Default())
-	router.POST("/api/fibs", server.CreateFibonacciHandler)
-	router.GET("/api/lastcreated", server.GetLatestFibonacciHandler)
-	router.GET("/api/getbyid/:id", server.GetFibonacciByIDHandler)
-	router.GET("/api/fibnumbers", server.ListFibonacciHandler)
-	router.DELETE("/api/fibnumbers/:id", server.DeleteFibHandler)
+	router.POST("/fibs", server.CreateFibonacciHandler)
+	router.GET("/lastcreated", server.GetLatestFibonacciHandler)
+	router.GET("/getbyid/:id", server.GetFibonacciByIDHandler)
+	router.GET("/fibnumbers", server.ListFibonacciHandler)
+	router.DELETE("/fibnumbers/:id", server.DeleteFibHandler)
 	server.router = router
 }
 

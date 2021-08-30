@@ -19,3 +19,7 @@ func NewStore(db *sql.DB) Store {
 		Queries: New(db),
 	}
 }
+
+// func CreateFibsTable()  {
+
+// }

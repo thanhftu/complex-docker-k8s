@@ -1,5 +1,7 @@
 postgres:
 	docker run --name postgres13 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres
+ruby:
+	docker run -it -v $(pwd):/app ruby sh
 createdb:
 	docker exec -it postgres13 createdb --username=root --owner=root fibonacci
 createinitmigrate:

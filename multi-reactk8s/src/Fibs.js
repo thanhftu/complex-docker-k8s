@@ -15,7 +15,7 @@ const Fibs = ()=>{
     getFibs()
   },[])
     const fetchValues = async ()=>{
-        const getdata = await axios.get('http://localhost:8000/api/fibnumbers')
+        const getdata = await axios.get('/api/fibnumbers')
         const fibs = getdata.data
         return fibs
     }
@@ -25,7 +25,7 @@ const Fibs = ()=>{
     const handleSubmit = async (e) => {
         e.preventDefault();
         setCalculatedIndex([...calculatedIndex,index])
-        const res=await axios.post('http://localhost:8000/api/fibs', {
+        const res=await axios.post('/api/fibs', {
           index: index
         });
         console.log("res",res.data)
@@ -43,7 +43,7 @@ const Fibs = ()=>{
         };
         const newVals = values.filter(val=>val.id!==id)
         setValues(newVals);
-        await axios.delete(`http://localhost:8000/api/fibnumbers/${id}`, {
+        await axios.delete(`/api/fibnumbers/${id}`, {
           id: id
         },options);
         console.log(id)

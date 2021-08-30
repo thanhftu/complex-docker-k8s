@@ -95,7 +95,7 @@ func (q *Queries) GetLatestCreatedFibonacci(ctx context.Context) (Fib, error) {
 
 const listFibonaccis = `-- name: ListFibonaccis :many
 SELECT id, index, value, create_at FROM fibs
-ORDER BY id
+ORDER BY id DESC
 LIMIT $1
 `
 
