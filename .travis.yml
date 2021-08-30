@@ -11,13 +11,13 @@ before_install:
   - curl https://sdk.cloud.google.com | bash > /dev/null;
   - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud components update kubectl
-  - gcloud auth activate-service-account travis-deployer@multi-k8s-324415.iam.gserviceaccount.com --key-file service-account.json
+  - gcloud auth activate-service-account --key-file service-account.json
   - gcloud config set project multi-k8s-324415
   - gcloud config set compute/zone asia-southeast1-a
   - gcloud container clusters get-credentials multi-cluster
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
-  - docker build -t thanhdhnt/react-test -f ./react-docker/Dockerfile.dev ./react-docker
+  - docker build -t thanhdhnt/react-test -f ./multi-reactk8s/Dockerfile.dev ./multi-reactk8s
 
 
 script:
